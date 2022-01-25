@@ -125,14 +125,12 @@ defmodule Liquid.Condition do
   defp contains(<<left::binary>>, <<right::binary>>),
     do: contains(left |> to_charlist, right |> to_charlist)
 
-  defp contains(left, <<right::binary>>) when is_list(left),
-    do: contains(left, right |> to_charlist)
+  defp contains(left, right) when is_list(left) do
+    right in left
+  end
 
   defp contains(<<left::binary>>, right) when is_list(right),
     do: contains(left |> to_charlist, right)
-
-  defp contains(left, right) when is_list(left) and not is_list(right),
-    do: contains(left, [right])
 
   defp contains(left, right) when is_list(right) and is_list(left),
     do: :string.rstr(left, right) > 0
