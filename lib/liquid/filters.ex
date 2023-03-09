@@ -77,17 +77,6 @@ defmodule Liquid.Filters do
       array |> to_iterable |> Enum.join(separator)
     end
 
-    def map(array, key) when is_list(array) do
-      with mapped <- array |> Enum.map(fn arg -> arg[key] end) do
-        case Enum.all?(mapped, &is_binary/1) do
-          true -> mapped |> Enum.reduce("", fn el, acc -> acc <> el end)
-          _ -> mapped
-        end
-      end
-    end
-
-    def map(_, _), do: ""
-
     def plus(value, operand) when is_number(value) and is_number(operand) do
       value + operand
     end
