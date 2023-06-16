@@ -123,7 +123,7 @@ defmodule Liquid.Condition do
   defp contains(_, nil), do: false
 
   defp contains(<<left::binary>>, <<right::binary>>),
-    do: contains(left |> to_charlist, right |> to_charlist)
+    do: String.contains?(left, right)
 
   defp contains(left, right) when is_list(left) do
     right in left

@@ -82,14 +82,14 @@ defmodule Liquid.Appointer do
 
         cond do
           Map.has_key?(parsed, :parts) ->
-            assigns |> Matcher.match(parsed.parts) |> to_string()
+            assigns |> Matcher.match(parsed.parts)
 
           Map.has_key?(assigns, :__struct__) ->
             key = String.to_atom(arg)
-            if Map.has_key?(assigns, key), do: to_string(assigns[key]), else: arg
+            if Map.has_key?(assigns, key), do: assigns[key], else: arg
 
           true ->
-            if Map.has_key?(assigns, arg), do: to_string(assigns[arg]), else: arg
+            if Map.has_key?(assigns, arg), do: assigns[arg], else: arg
         end
       end
 

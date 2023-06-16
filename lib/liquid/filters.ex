@@ -480,7 +480,11 @@ defmodule Liquid.Filters do
 
     args =
       for arg <- args do
-        Liquid.quote_matcher() |> Regex.replace(arg, "")
+        if is_binary(arg) do
+          Liquid.quote_matcher() |> Regex.replace(arg, "")
+        else
+          arg
+        end
       end
 
     functions = Functions.__info__(:functions)
