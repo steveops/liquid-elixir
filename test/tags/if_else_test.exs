@@ -227,6 +227,7 @@ defmodule Liquid.Tags.IfElseTagTest do
   test :if_with_contains_condition do
     assert_result("yes", "{% if 'bob' contains 'o' %}yes{% endif %}")
     assert_result("no", "{% if 'bob' contains 'f' %}yes{% else %}no{% endif %}")
+
     assert_result(
       "yes",
       "{% if 'gnomeslab-and-or-liquid' contains 'gnomeslab-and-or-liquid' %}yes{% endif %}"

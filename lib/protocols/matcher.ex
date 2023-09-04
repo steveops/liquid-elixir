@@ -67,6 +67,11 @@ defimpl Liquid.Matcher, for: Any do
   def match(current, ["size" | _]) when is_binary(current), do: current |> String.length()
 
   @doc """
+  Return the string itself for anything else
+  """
+  def match(current, _) when is_binary(current), do: current
+
+  @doc """
   Match functions for structs:
   """
   def match(current, [name | parts]) when is_map(current) and is_binary(name) do
