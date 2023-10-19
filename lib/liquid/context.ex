@@ -9,7 +9,8 @@ defmodule Liquid.Context do
             break: false,
             template: nil,
             global_filter: nil,
-            extra_tags: %{}
+            extra_tags: %{},
+            escape_variables: false
 
   def registers(context, key) do
     context.registers |> Map.get(key)
