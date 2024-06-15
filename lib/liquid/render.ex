@@ -72,6 +72,12 @@ defmodule Liquid.Render do
   defp escape(<<"</", t::binary>>, acc),
        do: escape(t, <<acc::binary, ?<, ?\\, ?/>>)
 
+  defp escape(<<"\t", t::binary>>, acc),
+       do: escape(t, <<acc::binary, ?\\, ?t>>)
+
+  defp escape(<<"\n", t::binary>>, acc),
+       do: escape(t, <<acc::binary, ?\\, ?n>>)
+
   defp escape(<<"\r\n", t::binary>>, acc),
        do: escape(t, <<acc::binary, ?\\, ?n>>)
 
