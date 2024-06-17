@@ -29,6 +29,8 @@ defmodule Liquid.Variable do
   def lookup(%Variable{} = v, %Context{} = context) do
     {ret, filters} = Appointer.assign(v, context)
 
+    ret = maybe_escape_variable(ret, context)
+
     result =
       try do
         {:ok, filters |> Filters.filter(ret) |> apply_global_filter(context)}
@@ -43,6 +45,46 @@ defmodule Liquid.Variable do
       {error, message} -> process_error(context, error, message)
     end
   end
+
+  defp maybe_escape_variable(rendered, %Context{escape_variables: true}), do: escape(rendered)
+  defp maybe_escape_variable(rendered, _), do: rendered
+
+  defp escape(data) when is_binary(data),
+       do: escape(data, "")
+
+  defp escape(not_binary), do: not_binary
+
+  defp escape(<<0x2028::utf8, t::binary>>, acc),
+       do: escape(t, <<acc::binary, "\\u2028">>)
+
+  defp escape(<<0x2029::utf8, t::binary>>, acc),
+       do: escape(t, <<acc::binary, "\\u2029">>)
+
+  defp escape(<<0::utf8, t::binary>>, acc),
+       do: escape(t, <<acc::binary, "\\u0000">>)
+
+  defp escape(<<"</", t::binary>>, acc),
+       do: escape(t, <<acc::binary, ?<, ?\\, ?/>>)
+
+  defp escape(<<"\t", t::binary>>, acc),
+       do: escape(t, <<acc::binary, ?\\, ?t>>)
+
+  defp escape(<<"\n", t::binary>>, acc),
+       do: escape(t, <<acc::binary, ?\\, ?n>>)
+
+  defp escape(<<"\r\n", t::binary>>, acc),
+       do: escape(t, <<acc::binary, ?\\, ?n>>)
+
+  defp escape(<<h, t::binary>>, acc) when h in [?", ?\\, ?`],
+       do: escape(t, <<acc::binary, ?\\, h>>)
+
+  defp escape(<<h, t::binary>>, acc) when h in [?\r, ?\n],
+       do: escape(t, <<acc::binary, ?\\, ?n>>)
+
+  defp escape(<<h, t::binary>>, acc),
+       do: escape(t, <<acc::binary, h>>)
+
+  defp escape(<<>>, acc), do: acc
 
   defp process_error(%Context{template: template} = context, error, message) do
     error_mode = Application.get_env(:liquid, :error_mode, :lax)
