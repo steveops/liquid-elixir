@@ -75,7 +75,7 @@ defmodule Liquid.Variable do
   defp escape(<<"\r\n", t::binary>>, acc),
        do: escape(t, <<acc::binary, ?\\, ?n>>)
 
-  defp escape(<<h, t::binary>>, acc) when h in [?", ?\\, ?`],
+  defp escape(<<h, t::binary>>, acc) when h in [?", ?\\],
        do: escape(t, <<acc::binary, ?\\, h>>)
 
   defp escape(<<h, t::binary>>, acc) when h in [?\r, ?\n],
