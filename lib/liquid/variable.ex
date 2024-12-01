@@ -50,39 +50,39 @@ defmodule Liquid.Variable do
   defp maybe_escape_variable(rendered, _), do: rendered
 
   defp escape(data) when is_binary(data),
-       do: escape(data, "")
+    do: escape(data, "")
 
   defp escape(not_binary), do: not_binary
 
   defp escape(<<0x2028::utf8, t::binary>>, acc),
-       do: escape(t, <<acc::binary, "\\u2028">>)
+    do: escape(t, <<acc::binary, "\\u2028">>)
 
   defp escape(<<0x2029::utf8, t::binary>>, acc),
-       do: escape(t, <<acc::binary, "\\u2029">>)
+    do: escape(t, <<acc::binary, "\\u2029">>)
 
   defp escape(<<0::utf8, t::binary>>, acc),
-       do: escape(t, <<acc::binary, "\\u0000">>)
+    do: escape(t, <<acc::binary, "\\u0000">>)
 
   defp escape(<<"</", t::binary>>, acc),
-       do: escape(t, <<acc::binary, ?<, ?\\, ?/>>)
+    do: escape(t, <<acc::binary, ?<, ?\\, ?/>>)
 
   defp escape(<<"\t", t::binary>>, acc),
-       do: escape(t, <<acc::binary, ?\\, ?t>>)
+    do: escape(t, <<acc::binary, ?\\, ?t>>)
 
   defp escape(<<"\n", t::binary>>, acc),
-       do: escape(t, <<acc::binary, ?\\, ?n>>)
+    do: escape(t, <<acc::binary, ?\\, ?n>>)
 
   defp escape(<<"\r\n", t::binary>>, acc),
-       do: escape(t, <<acc::binary, ?\\, ?n>>)
+    do: escape(t, <<acc::binary, ?\\, ?n>>)
 
   defp escape(<<h, t::binary>>, acc) when h in [?", ?\\],
-       do: escape(t, <<acc::binary, ?\\, h>>)
+    do: escape(t, <<acc::binary, ?\\, h>>)
 
   defp escape(<<h, t::binary>>, acc) when h in [?\r, ?\n],
-       do: escape(t, <<acc::binary, ?\\, ?n>>)
+    do: escape(t, <<acc::binary, ?\\, ?n>>)
 
   defp escape(<<h, t::binary>>, acc),
-       do: escape(t, <<acc::binary, h>>)
+    do: escape(t, <<acc::binary, h>>)
 
   defp escape(<<>>, acc), do: acc
 

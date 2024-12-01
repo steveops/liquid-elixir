@@ -8,7 +8,7 @@ defmodule Liquid.Render do
 
   def render(%Template{root: root}, %Context{} = context) do
     {output, context} = render([], root, context)
-    {:ok, output |> to_text, context}
+    {:ok, output |> to_text(context.stringify_output), context}
   end
 
   def render(output, [], %Context{} = context) do
@@ -30,7 +30,7 @@ defmodule Liquid.Render do
 
   def render(output, %Variable{} = variable, %Context{} = context) do
     {rendered, context} = Variable.lookup(variable, context)
-    {[join_list(rendered) | output], context}
+    {[join_list(rendered, context.stringify_output) | output], context}
   end
 
   def render(output, %Tag{name: name} = tag, %Context{} = context) do
@@ -45,9 +45,21 @@ defmodule Liquid.Render do
     end
   end
 
-  def to_text(list), do: list |> List.flatten() |> Enum.reverse() |> Enum.join()
+  def to_text(list, stringify_output?) do
+    if stringify_output? == false do
+      list |> Enum.reverse() |> List.flatten()
+    else
+      list |> List.flatten() |> Enum.reverse() |> Enum.join()
+    end
+  end
 
-  defp join_list(input) when is_list(input), do: input |> List.flatten() |> Enum.join()
+  defp join_list(input, stringify_output?) when is_list(input) do
+    if stringify_output? == false do
+      input |> List.flatten()
+    else
+      input |> List.flatten() |> Enum.join()
+    end
+  end
 
-  defp join_list(input), do: input
+  defp join_list(input, _), do: input
 end

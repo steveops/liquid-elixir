@@ -33,7 +33,11 @@ defmodule Liquid.Template do
   end
 
   def render(%Template{} = t, assigns, options) when is_map(assigns) do
-    context = %Context{assigns: assigns, escape_variables: options[:escape_variables] == true}
+    context = %Context{
+      assigns: assigns,
+      escape_variables: options[:escape_variables] == true,
+      stringify_output: Keyword.get(options, :stringify_output, true)
+    }
 
     context =
       case {Map.has_key?(assigns, "global_filter"), Map.has_key?(assigns, :global_filter)} do

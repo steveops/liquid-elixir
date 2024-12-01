@@ -12,7 +12,8 @@ defmodule Liquid.Capture do
     {block_output, context} = Liquid.Render.render([], content, context)
 
     result_assign =
-      context.assigns |> Map.put(variable_name, block_output |> Liquid.Render.to_text())
+      context.assigns
+      |> Map.put(variable_name, block_output |> Liquid.Render.to_text(context.stringify_output))
 
     context = %{context | assigns: result_assign}
     {output, context}
